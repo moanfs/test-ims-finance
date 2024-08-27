@@ -9,7 +9,13 @@
             <h6>Detail Kontrak: {{ $customer->kontrak_no }}</h6>
             <p>Nama Pelanggan: {{ $customer->client_name }}</p>
             <p>Total Angsuran Lunas: Rp {{ number_format($totalAngsuran, 2, ',', '.') }}</p>
+            <p>Total Yang Jatuh Tempo Rp {{ number_format($totalBelumDibayar, 2, ',', '.') }}</p>
         </div>
+        @if ($message = Session::get('error'))
+				<div class="alert alert-danger alert-block">
+					<strong>{{ $message }}</strong>
+				</div>
+				@endif
         <hr>
         <table class="table table-striped">
             <thead>
@@ -19,7 +25,6 @@
                     <th scope="col">Angsuran / Bulan</th>
                     <th scope="col">Tanggal Jatuh Tempo</th>
                     <th scope="col">Status Pembayaran</th>
-                    {{-- <th scope="col">Aksi</th> --}}
                 </tr>
             </thead>
             <tbody>
@@ -30,13 +35,6 @@
                     <td>Rp. {{ number_format($tenor->angsuran_per_bulan, 2, ',', '.') }}</td>
                     <td>{{$tenor->tanggal_jatuh_tempo}}</td>
                     <td>{{$tenor->status_pembayaran}}</td>
-                    {{-- <td>
-                        @if ($tenor->status_pembayaran == 'lunas')
-                            <button  class="btn btn-success">Selesai</button>
-                            @else
-                            <a href="{{route('tempo', $tenor->id)}}" class="btn btn-primary">Bayar</a>
-                        @endif
-                    </td> --}}
                 </tr>
                 @empty
                 <tr>

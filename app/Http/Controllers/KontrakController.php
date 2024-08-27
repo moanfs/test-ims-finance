@@ -37,7 +37,8 @@ class KontrakController extends Controller
             'date' => 'required',
             'client_name' => 'required|string|max:255',
             'otr' => 'required|numeric',
-            'dp' => 'required|numeric',
+            // 'dp' => 'required|numeric',
+            'dp' => 'required|in:10,15,20,25',
             'jangka_waktu' => 'required|in:6,8,12,18,24,36',
         ]);
 
@@ -46,7 +47,8 @@ class KontrakController extends Controller
             $count = Customer::count() + 1;
             $kontrak_no = 'AGR' . str_pad($count, 5, '0', STR_PAD_LEFT);
             $otr = $validated['otr'];
-            $dp = $validated['dp'];
+            $dp = $otr * $validated['dp'] / 100;
+            // $dp = $uangmuka;
             $date = Carbon::parse($validated['date']);
             $pokok_utang = $otr - $dp;
             $jangka_waktu = $validated['jangka_waktu'];
@@ -100,11 +102,18 @@ class KontrakController extends Controller
     public function show(string $kontrak_no)
     {
         $customer = Customer::where('kontrak_no', $kontrak_no)->firstOrFail();
+        $tahunSekarang = now()->year;
+        $bulansekarang = now()->month;
         // dd($customer->id);
         $tenors = Tenor::with('customer')
             ->where('customer_id', $customer->id)
             ->orderBy('status_pembayaran', 'desc')
             ->get();
+        $totalBelumDibayar = Tenor::where('customer_id', $customer->id)
+            ->where('status_pembayaran', 'belum lunas')
+            ->whereYear('tanggal_jatuh_tempo', '<=', $tahunSekarang)
+            ->whereMonth('tanggal_jatuh_tempo', '<=', $bulansekarang)
+            ->sum('angsuran_per_bulan');
 
         $totalAngsuran = $tenors->where('status_pembayaran', 'lunas')->sum('angsuran_per_bulan');
 
@@ -112,6 +121,7 @@ class KontrakController extends Controller
             'customer' => $customer,
             'tenors' => $tenors,
             'totalAngsuran' => $totalAngsuran,
+            'totalBelumDibayar' => $totalBelumDibayar
         ]);
     }
 

@@ -63,6 +63,25 @@
 
         <div class="mb-3">
             <label for="dp" class="form-label">Uang Muka</label>
+            <div class="input-group mb-3">
+                <select class="form-select @error('dp') is-invalid @enderror" id="dp" name="dp">
+                    <option selected>Uang Muka dalam persen</option>
+                    <option value="10">10 %</option>
+                    <option value="15">15 %</option>
+                    <option value="20">20 %</option>
+                    <option value="25">25 %</option>
+                </select>
+              <label class="input-group-text" for="dp">%</label>
+            </div>
+              @error('dp')
+                  <div class="invalid-feedback">
+                      {{ $message }}
+                  </div>
+              @enderror
+          </div>
+
+        {{-- <div class="mb-3">
+            <label for="dp" class="form-label">Uang Muka</label>
             <div class="input-group">
                 <span class="input-group-text">Rp</span>
                 <input type="text" class="form-control @error('dp') is-invalid @enderror" id="dp" name="dp">
@@ -73,7 +92,7 @@
                     {{ $message }}
                 </div>
             @enderror
-        </div>
+        </div> --}}
 
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>

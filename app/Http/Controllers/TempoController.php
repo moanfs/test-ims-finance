@@ -17,14 +17,17 @@ class TempoController extends Controller
 
         $totalBelumDibayar = Tenor::where('customer_id', $customer->id)
             ->where('status_pembayaran', 'belum lunas')
-            ->whereYear('tanggal_jatuh_tempo', $tahunSekarang)
+            ->whereYear('tanggal_jatuh_tempo', '<=', $tahunSekarang)
             ->whereMonth('tanggal_jatuh_tempo', '<=', $bulansekarang)
             ->sum('angsuran_per_bulan');
-        // dd($totalBelumDibayar);
+
+        if ($totalBelumDibayar <= 0) {
+            return redirect()->back()->with('error', 'Semua tenor sudah dibayar.');
+        }
 
         $tenors = Tenor::where('customer_id', $customer->id)
             ->where('status_pembayaran', 'belum lunas')
-            ->whereYear('tanggal_jatuh_tempo', $tahunSekarang)
+            ->whereYear('tanggal_jatuh_tempo', '<=', $tahunSekarang)
             ->whereMonth('tanggal_jatuh_tempo', '<=', $bulansekarang)
             ->get()->first();
         // dd($tenors);
@@ -61,19 +64,19 @@ class TempoController extends Controller
 
         $totalBelumDibayar = Tenor::where('customer_id', $customer->id)
             ->where('status_pembayaran', 'belum lunas')
-            ->whereYear('tanggal_jatuh_tempo', $tahunSekarang)
+            ->whereYear('tanggal_jatuh_tempo', '<=', $tahunSekarang)
             ->whereMonth('tanggal_jatuh_tempo', '<=', $bulansekarang)
             ->sum('angsuran_per_bulan');
 
         $tenors = Tenor::where('customer_id', $customer->id)
             ->where('status_pembayaran', 'belum lunas')
-            ->whereYear('tanggal_jatuh_tempo', $tahunSekarang)
+            ->whereYear('tanggal_jatuh_tempo', '<=', $tahunSekarang)
             ->whereMonth('tanggal_jatuh_tempo', '<=', $bulansekarang)
             ->get()->first();
 
         $tenor = Tenor::where('customer_id', $customer->id)
             ->where('status_pembayaran', 'belum lunas')
-            ->whereYear('tanggal_jatuh_tempo', $tahunSekarang)
+            ->whereYear('tanggal_jatuh_tempo', '<=', $tahunSekarang)
             ->whereMonth('tanggal_jatuh_tempo', '<=', $bulansekarang)
             ->get();
 
