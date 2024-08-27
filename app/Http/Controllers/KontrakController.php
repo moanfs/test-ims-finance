@@ -108,6 +108,7 @@ class KontrakController extends Controller
         $tenors = Tenor::with('customer')
             ->where('customer_id', $customer->id)
             ->orderBy('status_pembayaran', 'desc')
+            ->orderBy('angsuran_ke', 'asc')
             ->get();
         $totalBelumDibayar = Tenor::where('customer_id', $customer->id)
             ->where('status_pembayaran', 'belum lunas')
